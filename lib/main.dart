@@ -62,16 +62,17 @@ class _MyHomePageState extends State<MyHomePage> {
   TokenResponse? tokenResponse;
 
   void _auth() async {
-    //ipconfig ip  192.168.15.4
-    //IS url  'http://192.168.15.4:5000';
+    //ipconfig ip  
+    const currentIpv4 = "192.168.15.4";
+    
     Uri redirectUri = Uri(
       scheme: 'http',
-      host: '192.168.15.4',
+      host: currentIpv4,
       port: 4000,
     );
     Uri authorizationUrl = Uri(
       scheme: 'http',
-      host: '192.168.15.4',
+      host: currentIpv4,
       port: 5000,
     );
     print("IDENTITY_URL => $authorizationUrl");
@@ -126,8 +127,8 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _callApi() async {
-    var accessToken = tokenResponse?['accessToken'];
-    //http://admin.api.lotus.com.br/juridico/notificacao
+    var accessToken = tokenResponse?['accessToken'];    
+    //juridico/notificacao
 
     Uri urlTeste = Uri(
       scheme: 'http',
@@ -138,7 +139,7 @@ class _MyHomePageState extends State<MyHomePage> {
       urlTeste.toString(),
       'juridico/notificacao',
     );
-    //var testUrlApi = 'http://localhost:5002/juridico/notificacao';
+    
     Map<String, String> headers = {
       'Authorization': 'Bearer $accessToken',
     };
