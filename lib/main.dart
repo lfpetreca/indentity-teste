@@ -60,11 +60,10 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   TokenResponse? tokenResponse;
+  //ipconfig ip
+  static String currentIpv4 = "10.1.12.46";
 
   void _auth() async {
-    //ipconfig ip  
-    const currentIpv4 = "192.168.15.4";
-    
     Uri redirectUri = Uri(
       scheme: 'http',
       host: currentIpv4,
@@ -87,15 +86,10 @@ class _MyHomePageState extends State<MyHomePage> {
     // create a function to open a browser with an url
     Future<void> urlLauncher(String url) async {
       url = url.replaceAll('+', '%20');
-      //print("BEFORE => $url");
-      //Uri encodedUrl = Uri.parse(url);
       print("AFTER ENCODED_URL => $url");
       if (await canLaunchUrlString(url)) {
         await launchUrlString(url);
       } else {
-        var canLaunchUrlTeste = await canLaunchUrlString(url);
-        print("URL => $url");
-        print("CAN $canLaunchUrlTeste");
         throw Exception('Unable to lauch authorization Url $url');
       }
     }
@@ -114,32 +108,37 @@ class _MyHomePageState extends State<MyHomePage> {
     );
 
     // starts the authentication
+    print("CHECKPOINT");
     Credential credential = await authenticator.authorize();
+    print("CREDENTIAL => ${credential}");
     tokenResponse = await credential.getTokenResponse();
+    print("TOKEN_RES => ${tokenResponse}");
 
-    // close the webview when finished
-    print(credential.getUserInfo());
     Future<UserInfo> userInfo =
         credential.getUserInfo(); // TODO: REMOVE THIS LINE
-
     print("USER_INFO => $userInfo");
+    // close the webview when finished
     closeInAppWebView();
   }
 
   void _callApi() async {
-    var accessToken = tokenResponse?['accessToken'];    
+    var accessToken = tokenResponse?['accessToken'];
+    print("ACCESS_TOKEN => ${accessToken}");
     //juridico/notificacao
 
     Uri urlTeste = Uri(
       scheme: 'http',
-      host: 'localhost',
+      host: currentIpv4,
       port: 5002,
     );
+    print("URL_TESTE => ${urlTeste}");
     var url = Uri.http(
       urlTeste.toString(),
-      'juridico/notificacao',
+      '/juridico/notificacao',
     );
-    
+
+    print("URL_HTTP => ${url}");
+
     Map<String, String> headers = {
       'Authorization': 'Bearer $accessToken',
     };
@@ -149,6 +148,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
     var body = response.body; // TODO: REMOVE THIS LINE
     //just to check response
+    print("RES_BODY => ${body}");
     final a = "" + body;
   }
 
